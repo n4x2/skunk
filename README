@@ -1,0 +1,30 @@
+            __                 __    
+      _____|  | ____ __  ____ |  | __
+     /  ___/  |/ /  |  \/    \|  |/ /
+     \___ \|    <|  |  /   |  \    < 
+    /____  >__|_ \____/|___|  /__|_ \
+         \/     \/          \/     \/
+
+skunk - password manager
+------------------------
+skunk is an experimental password manager designed to handle passwords, OTPs,
+and also offering peer-to-peer syncing as a feature. Skunk may not meet your 
+specific criteria; so consider using the reliable password manager 'pass' for 
+your password management needs, available at https://www.passwordstore.org/.
+
+Installation
+------------
+If you want give a shot:
+    
+    go install github.com/n4x2/skunk@latest
+
+Usage
+-----
+
+    skunk help
+
+Use skunk help [command] for details.
+
+License
+-------
+Skunk is licensed under the BSD 2-Clause License.
