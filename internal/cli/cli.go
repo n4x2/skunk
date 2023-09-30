@@ -26,19 +26,16 @@ type App struct {
 	Commands []*command.Command // List of available commands.
 }
 
-// AddCommand adds a new command to the application. It takes the name (n), brief description
-// (b), usage information (u), and a function (h) that will be executed when the command is
-// invoked. It returns an error if a command with the same name already exists.
-func (app *App) AddCommand(n, b, u string, h func(*flag.FlagSet, []string) error) error {
+// AddCommand adds a new command to the application. It takes the 'c' type of [Cmd].
+// It returns an error if a command with the same name already exists.
+func (app *App) AddCommand(c *command.Command) error {
 	for _, cmd := range app.Commands {
-		if cmd.N == n {
-			return fmt.Errorf("Command %s already exist", n)
+		if cmd.N == c.N {
+			return fmt.Errorf("Command %s already exist", c.N)
 		}
 	}
 
-	var cmd = command.New(n, b, u, h)
-
-	app.Commands = append(app.Commands, cmd)
+	app.Commands = append(app.Commands, c)
 
 	return nil
 }
@@ -64,6 +61,13 @@ func (app *App) Help() {
 	fmt.Println("  -h, --help\tShow this text")
 	fmt.Println("  -v, --version\tShow version information")
 	fmt.Println("\nUse '[command] --help' to see more information about a command.")
+}
+
+// NewCommand creates a new command. It takes the name (n), brief description (b), usage
+// information (u), and a function (h) that will be executed when the command is invoked.
+// It returns a command.
+func (app *App) NewCommand(n, b, u string, h command.HandlerFunc) *command.Command {
+	return command.New(n, b, u, h)
 }
 
 // Run executes the application with the given arguments.
