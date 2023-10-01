@@ -53,7 +53,7 @@ func (app *App) Help() {
 	if len(app.Commands) > 0 {
 		fmt.Println("Commands:")
 		for _, cmd := range app.Commands {
-			fmt.Printf("  %s\t%s\n", cmd.N, cmd.B)
+			fmt.Printf("  %-14s%s\n", cmd.N, cmd.B)
 		}
 		fmt.Print("\n")
 	}
