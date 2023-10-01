@@ -119,6 +119,8 @@ func (app *App) Run(args []string) (int, error) {
 			if err := cmd.Fn(cmd.Fs, args[2:]); err != nil {
 				return ExitFailure, err
 			}
+
+			app.Exit(ExitSuccess)
 		}
 	}
 
