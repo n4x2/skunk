@@ -15,7 +15,9 @@ func generateHandler(fs *flag.FlagSet, args []string) error {
 		number, symbol, copy bool
 	)
 
-	fs.Parse(args)
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
 
 	copyFlag := fs.Lookup("copy")
 	lenFlag := fs.Lookup("len")
