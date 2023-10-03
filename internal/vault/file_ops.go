@@ -3,6 +3,7 @@ package vault
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -47,7 +48,8 @@ func Decode(file, pass string) ([]byte, error) {
 // using the given passphrase. It returns an error if the encryption
 // or file operations fail.
 func Encode(file, pass string, value interface{}) error {
-	tmpFile, err := os.CreateTemp(filepath.Dir(file), "*")
+	tmpPattern := fmt.Sprintf("%s.*.tmp", filepath.Base(file))
+	tmpFile, err := os.CreateTemp(filepath.Dir(file), tmpPattern)
 	if err != nil {
 		return err
 	}
