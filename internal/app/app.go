@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/n4x2/skunk/internal/app/handler"
 	"github.com/n4x2/skunk/internal/cli"
 )
 
@@ -32,7 +33,7 @@ func NewApp() *cli.App {
 	cmdName = "generate"
 	cmdBrief = "Generate random non-consecutive string as password"
 	cmdUsage = cmdName + " [FLAG] [ARGS]"
-	generate := app.NewCommand(cmdName, cmdBrief, cmdUsage, generateHandler)
+	generate := app.NewCommand(cmdName, cmdBrief, cmdUsage, handler.GeneratePassword)
 
 	// Command generate flags.
 	generate.Fs.Bool("copy", false, "Copy generated password into clipboard")

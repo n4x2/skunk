@@ -1,15 +1,16 @@
-package app
+package handler
 
 import (
 	"flag"
 	"fmt"
 
 	"github.com/atotto/clipboard"
-	"github.com/n4x2/zoo/pass"
+	"github.com/n4x2/skunk/internal/passgen"
 	"github.com/n4x2/zoo/to"
 )
 
-func generateHandler(fs *flag.FlagSet, args []string) error {
+// GeneratePassword generates a password based on flags.
+func GeneratePassword(fs *flag.FlagSet, args []string) error {
 	var (
 		len                  int
 		number, symbol, copy bool
@@ -51,7 +52,7 @@ func generateHandler(fs *flag.FlagSet, args []string) error {
 		symbol = pSymbol
 	}
 
-	password, err := pass.Generate(number, symbol, len)
+	password, err := passgen.GeneratePassword(number, symbol, len)
 	if err != nil {
 		return err
 	}
