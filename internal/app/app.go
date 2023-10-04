@@ -34,20 +34,18 @@ func NewApp() *cli.App {
 	cmdBrief = "Generate random non-consecutive string as password"
 	cmdUsage = cmdName + " [FLAG] [ARGS]"
 	generate := app.NewCommand(cmdName, cmdBrief, cmdUsage, handler.GeneratePassword)
-
 	// Command generate flags.
 	generate.Fs.Bool("copy", false, "Copy generated password into clipboard")
 	generate.Fs.Bool("numbers", false, `Include random numbers "0-9"`)
 	generate.Fs.Bool("symbols", false, `Include random symbols "!@#$%^&*"`)
 	generate.Fs.Int("len", 20, "The length of password")
-
 	// Command generate examples.
 	generate.E = map[string]string{
 		"Copy into clipboard": "skunk generate --copy -numbers -symbols -len=18",
 	}
 
 	// Add commands into app.
-	_ = app.AddCommand(generate)
+	app.AddCommand(generate)
 
 	return app
 }
