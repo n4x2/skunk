@@ -29,6 +29,18 @@ func NewApp() *cli.App {
 		cmdName, cmdBrief, cmdUsage string
 	)
 
+	// Command add.
+	cmdName = "add"
+	cmdBrief = "Add new password into vault"
+	cmdUsage = "add [FLAG] [ARGS]"
+	add := app.NewCommand(cmdName, cmdBrief, cmdUsage, handler.AddPassword)
+	// Command add flags.
+	add.Fs.String("name", "", "Password name")
+	// Command add examples.
+	add.E = map[string]string{
+		"Password name": `skunk add --name="Streaming"`,
+	}
+
 	// Command generate.
 	cmdName = "generate"
 	cmdBrief = "Generate random non-consecutive string as password"
@@ -45,7 +57,7 @@ func NewApp() *cli.App {
 	}
 
 	// Add commands into app.
-	app.AddCommand(generate)
+	app.AddCommand(add, generate)
 
 	return app
 }
