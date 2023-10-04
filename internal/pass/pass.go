@@ -3,6 +3,7 @@ package pass
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/n4x2/skunk/internal/vault"
 )
@@ -54,4 +55,22 @@ func AddPassword(value Password, pass string) error {
 	}
 
 	return nil
+}
+
+// FindPassword retrive [Password] by matching the name.
+func FindPassword(name, pass string) (Password, error) {
+	var password Password
+
+	_, passwords, err := getVault(pass)
+	if err != nil {
+		return password, err
+	}
+
+	for _, pass := range passwords {
+		if strings.EqualFold(pass.Name, name) {
+			return pass, nil
+		}
+	}
+
+	return password, nil
 }
