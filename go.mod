@@ -6,6 +6,7 @@ require (
 	filippo.io/age v1.1.1
 	github.com/atotto/clipboard v0.1.4
 	github.com/n4x2/zoo v0.0.0-20230929152532-3cacebc2c649
+	golang.org/x/term v0.3.0
 )
 
 require (
