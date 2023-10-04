@@ -26,18 +26,9 @@ type App struct {
 	Commands []*command.Command // List of available commands.
 }
 
-// AddCommand adds a new command to the application. It takes the 'c' type of [Cmd].
-// It returns an error if a command with the same name already exists.
-func (app *App) AddCommand(c *command.Command) error {
-	for _, cmd := range app.Commands {
-		if cmd.N == c.N {
-			return fmt.Errorf("Command %s already exist", c.N)
-		}
-	}
-
-	app.Commands = append(app.Commands, c)
-
-	return nil
+// AddCommand adds new commands into application.
+func (app *App) AddCommand(c ...*command.Command) {
+	app.Commands = c
 }
 
 // Exit exits the application with the given code.
