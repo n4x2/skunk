@@ -41,6 +41,18 @@ func NewApp() *cli.App {
 		"Password name": `skunk add --name="Streaming"`,
 	}
 
+	// Command find.
+	cmdName = "find"
+	cmdBrief = "Find existing password by matching the name"
+	cmdUsage = "find [FLAG] [ARGS]"
+	find := app.NewCommand(cmdName, cmdBrief, cmdUsage, handler.FindPassword)
+	//Commmand find flags.
+	find.Fs.String("name", "", "Password name")
+	// Command find examples.
+	find.E = map[string]string{
+		"Password name": `skunk find --name="Git"`,
+	}
+
 	// Command generate.
 	cmdName = "generate"
 	cmdBrief = "Generate random non-consecutive string as password"
@@ -57,7 +69,7 @@ func NewApp() *cli.App {
 	}
 
 	// Add commands into app.
-	app.AddCommand(add, generate)
+	app.AddCommand(add, find, generate)
 
 	return app
 }
