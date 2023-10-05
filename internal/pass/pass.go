@@ -75,6 +75,16 @@ func FindPassword(name, pass string) (Password, error) {
 	return password, nil
 }
 
+// ListPassword retriev all passwords from vault.
+func ListPassword(pass string) ([]Password, error) {
+	_, passwords, err := getVault(pass)
+	if err != nil {
+		return nil, err
+	}
+
+	return passwords, nil
+}
+
 // RemovePassword remove a password from vault.
 func RemovePassword(name, pass string) error {
 	vaultFile, passwords, err := getVault(pass)
