@@ -74,3 +74,24 @@ func FindPassword(name, pass string) (Password, error) {
 
 	return password, nil
 }
+
+// RemovePassword remove a password from vault.
+func RemovePassword(name, pass string) error {
+	vaultFile, passwords, err := getVault(pass)
+	if err != nil {
+		return err
+	}
+
+	var newPasswords []Password
+	for _, password := range passwords {
+		if !strings.EqualFold(password.Name, name) {
+			newPasswords = append(newPasswords, password)
+		}
+	}
+
+	if err := vault.Encode(vaultFile, pass, newPasswords); err != nil {
+		return err
+	}
+
+	return nil
+}
