@@ -3,6 +3,7 @@ package vault
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -11,6 +12,9 @@ import (
 	"filippo.io/age"
 	"filippo.io/age/armor"
 )
+
+// vaultPassError error return for incorrect vault password.
+var vaultPassError = errors.New("vault: password is incorrect")
 
 // Decode decrypts the specified file using the given passphrase.
 // It returns the decrypted data as a byte slice. It returns error
@@ -31,7 +35,7 @@ func Decode(file, pass string) ([]byte, error) {
 
 	decryptedFile, err := age.Decrypt(armorFile, identity)
 	if err != nil {
-		return nil, err
+		return nil, vaultPassError
 	}
 
 	value := &bytes.Buffer{}
@@ -68,7 +72,7 @@ func Encode(file, pass string, value interface{}) error {
 
 	encryptedFile, err := age.Encrypt(armorFile, recipient)
 	if err != nil {
-		return err
+		return vaultPassError
 	}
 
 	if err = json.NewEncoder(encryptedFile).Encode(value); err != nil {
