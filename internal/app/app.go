@@ -68,8 +68,20 @@ func NewApp() *cli.App {
 		"Copy into clipboard": "skunk generate --copy -numbers -symbols -len=18",
 	}
 
+	// Command remove.
+	cmdName = "rm"
+	cmdBrief = "Remove password from vault"
+	cmdUsage = "rm [FLAG] [ARGS]"
+	remove := app.NewCommand(cmdName, cmdBrief, cmdUsage, handler.RemovePassword)
+	//Commmand remove flags.
+	remove.Fs.String("name", "", "Password name")
+	// Command remove examples.
+	remove.E = map[string]string{
+		"Remove by name": `skunk rm --name="Git"`,
+	}
+
 	// Add commands into app.
-	app.AddCommand(add, find, generate)
+	app.AddCommand(add, find, generate, remove)
 
 	return app
 }
