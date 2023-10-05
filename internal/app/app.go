@@ -53,6 +53,12 @@ func NewApp() *cli.App {
 		"Password name": `skunk find --name="Git"`,
 	}
 
+	// Command list.
+	cmdName = "list"
+	cmdBrief = "List available passwords"
+	cmdUsage = ""
+	list := app.NewCommand(cmdName, cmdBrief, cmdUsage, handler.ListPassword)
+
 	// Command generate.
 	cmdName = "generate"
 	cmdBrief = "Generate random non-consecutive string as password"
@@ -81,7 +87,7 @@ func NewApp() *cli.App {
 	}
 
 	// Add commands into app.
-	app.AddCommand(add, find, generate, remove)
+	app.AddCommand(add, find, list, generate, remove)
 
 	return app
 }
