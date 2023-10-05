@@ -57,6 +57,26 @@ func AddPassword(value Password, pass string) error {
 	return nil
 }
 
+// UpdatePassword update existing password in vault.
+func UpdatePassword(value Password, name, pass string) error {
+	vaultFile, passwords, err := getVault(pass)
+	if err != nil {
+		return err
+	}
+
+	for i, password := range passwords {
+		if strings.EqualFold(password.Name, name) {
+			passwords[i] = value
+		}
+	}
+
+	if err := vault.Encode(vaultFile, pass, passwords); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // FindPassword retrive [Password] by matching the name.
 func FindPassword(name, pass string) (Password, error) {
 	var password Password
