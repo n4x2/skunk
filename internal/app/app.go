@@ -98,8 +98,21 @@ func NewApp() *cli.App {
 		"Remove by name": `skunk rm --name="Git"`,
 	}
 
+	// Command show.
+	cmdName = "show"
+	cmdBrief = "Show existing password or copy into clipboard"
+	cmdUsage = "show [FLAG] [ARGS]"
+	show := app.NewCommand(cmdName, cmdBrief, cmdUsage, handler.ShowPassword)
+	//Commmand show flags.
+	show.Fs.String("name", "", "Password name")
+	show.Fs.Bool("copy", false, "Copy password into clipboard")
+	// Command show examples.
+	show.E = map[string]string{
+		"Copy into clipboard": `skunk show --name="Git" --copy`,
+	}
+
 	// Add commands into app.
-	app.AddCommand(add, edit, find, list, generate, remove)
+	app.AddCommand(add, edit, find, list, generate, remove, show)
 
 	return app
 }
