@@ -21,9 +21,9 @@ If you want give a shot:
 Usage
 -----
 
-    skunk help
+    skunk --help
 
-Use skunk help [command] for details.
+Use skunk [command] --help for more information.
 
 License
 -------
