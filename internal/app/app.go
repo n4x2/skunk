@@ -41,6 +41,18 @@ func NewApp() *cli.App {
 		"Password name": `skunk add --name="Streaming"`,
 	}
 
+	// Command edit.
+	cmdName = "edit"
+	cmdBrief = "Edit existing password in vault"
+	cmdUsage = "edit [FLAG] [ARGS]"
+	edit := app.NewCommand(cmdName, cmdBrief, cmdUsage, handler.EditPassword)
+	// Command add flags.
+	edit.Fs.String("name", "", "Password name")
+	// Command add examples.
+	edit.E = map[string]string{
+		"Edit password": `skunk edit --name="Git"`,
+	}
+
 	// Command find.
 	cmdName = "find"
 	cmdBrief = "Find existing password by matching the name"
@@ -87,7 +99,7 @@ func NewApp() *cli.App {
 	}
 
 	// Add commands into app.
-	app.AddCommand(add, find, list, generate, remove)
+	app.AddCommand(add, edit, find, list, generate, remove)
 
 	return app
 }
