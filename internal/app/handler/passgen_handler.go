@@ -72,7 +72,7 @@ func GeneratePassword(fs *flag.FlagSet, args []string) error {
 			return err
 		}
 
-		fmt.Println("Copied into clipboard")
+		fmt.Println("copied into clipboard")
 		return nil
 	}
 

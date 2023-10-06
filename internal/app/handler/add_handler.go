@@ -1,14 +1,11 @@
 package handler
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
-	"os"
 
 	"github.com/n4x2/skunk/internal/pass"
 	"github.com/n4x2/skunk/internal/terminal"
-	"golang.org/x/term"
 )
 
 // AddPassword add new password based on flags.
@@ -29,44 +26,46 @@ func AddPassword(fs *flag.FlagSet, args []string) error {
 	if nameFlag := fs.Lookup("name"); nameFlag != nil {
 		name = nameFlag.Value.String()
 		if name == "" {
-			return fmt.Errorf("value can not empty")
+			return &EmptyValueError{Field: "flag: name"}
 		}
 	}
 
-	// Username.
-	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Printf("(%s) Username: ", name)
-	if scanner.Scan() {
-		username = scanner.Text()
+	fmt.Printf("(%s) username: ", name)
+	value := terminal.AskValue()
+	if value == "" {
+		return &EmptyValueError{Field: "username"}
 	}
+	username = value
 
-	// Password.
-	fmt.Printf("(%s) Password: ", name)
-	passwordBytes, err := term.ReadPassword(int(os.Stdin.Fd()))
+	fmt.Printf("(%s) password: ", name)
+	secret, err := terminal.AskCredentials()
 	if err != nil {
-		return err
+		return fmt.Errorf("\n%w", err)
 	}
-	password = string(passwordBytes)
 
-	// OTP.
-	scanner = bufio.NewScanner(os.Stdin)
-	fmt.Printf("\n\nAre you want add OTP for account "+`"%s"`+" ? (y/n): ", username)
-	if scanner.Scan() {
-		answer := scanner.Text()
-		if answer == "y" || answer == "Y" {
-			scanner = bufio.NewScanner(os.Stdin)
-			fmt.Printf("\n(OTP) Token: ")
-			if scanner.Scan() {
-				token = scanner.Text()
-			}
+	if secret == "" {
+		return fmt.Errorf("\n%w", &EmptyValueError{Field: "password"})
+	}
+	password = secret
+
+	fmt.Printf("\n\nadd OTP for \"%s\" ? (y/n): ", username)
+	if ok := terminal.AskConfirmation(); ok {
+		fmt.Printf("\n(OTP) Token: ")
+		value := terminal.AskValue()
+		if value == "" {
+			return &EmptyValueError{Field: "OTP token"}
 		}
+		token = value
 	}
 
-	// Vault password.
 	fmt.Printf("\nEnter vault password: ")
-	passVault, err := term.ReadPassword(int(os.Stdin.Fd()))
+	secret, err = terminal.AskCredentials()
 	if err != nil {
-		return err
+		return fmt.Errorf("\nerror: %w", err)
+	}
+
+	if secret == "" {
+		return fmt.Errorf("\n%w", &EmptyValueError{Field: "vault password"})
 	}
 
 	input := pass.Password{
@@ -76,13 +75,10 @@ func AddPassword(fs *flag.FlagSet, args []string) error {
 		Token:    token,
 	}
 
-	if err = pass.AddPassword(input, string(passVault)); err != nil {
-		terminal.ClearLines(5)
-		return err
+	if err = pass.AddPassword(input, secret); err != nil {
+		return fmt.Errorf("\nerror: %w", err)
 	}
 
-	terminal.ClearLines(5)
-	fmt.Printf(`"%s" successfully saved.`+"\n", name)
-
+	fmt.Printf("\n\"%s\" successfully saved\n", name)
 	return nil
 }

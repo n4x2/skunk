@@ -3,11 +3,9 @@ package handler
 import (
 	"flag"
 	"fmt"
-	"os"
 
 	"github.com/n4x2/skunk/internal/pass"
 	"github.com/n4x2/skunk/internal/terminal"
-	"golang.org/x/term"
 )
 
 func ListPassword(fs *flag.FlagSet, args []string) error {
@@ -15,30 +13,29 @@ func ListPassword(fs *flag.FlagSet, args []string) error {
 		return err
 	}
 
-	// Vault password.
-	fmt.Printf("Enter vault password: ")
-	passVault, err := term.ReadPassword(int(os.Stdin.Fd()))
+	fmt.Printf("enter vault password: ")
+	secret, err := terminal.AskCredentials()
 	if err != nil {
-		return err
+		return fmt.Errorf("\n%w", err)
 	}
 
-	passwords, err := pass.ListPassword(string(passVault))
+	if secret == "" {
+		return fmt.Errorf("\n%w", &EmptyValueError{Field: "vault password"})
+	}
+
+	passwords, err := pass.ListPassword(secret)
 	if err != nil {
-		terminal.ClearLines(1)
-		return err
+		return fmt.Errorf("\nerror: %w", err)
 	}
 
 	if passwords == nil {
-		terminal.ClearLines(1)
-		fmt.Println("No password available.")
+		fmt.Printf("\nvault: no password available\n")
 		return nil
 	}
 
-	terminal.ClearLines(1)
-	fmt.Printf("Available passwords:\n\n")
+	fmt.Printf("\n\navailable %d passwords:\n", len(passwords))
 	for _, password := range passwords {
-		fmt.Println(password.Name)
+		fmt.Printf("- %s\n", password.Name)
 	}
-
 	return nil
 }

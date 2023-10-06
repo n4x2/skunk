@@ -3,11 +3,9 @@ package handler
 import (
 	"flag"
 	"fmt"
-	"os"
 
 	"github.com/n4x2/skunk/internal/pass"
 	"github.com/n4x2/skunk/internal/terminal"
-	"golang.org/x/term"
 )
 
 // FindPassword find password by matching the name.
@@ -25,25 +23,29 @@ func FindPassword(fs *flag.FlagSet, args []string) error {
 	if nameFlag := fs.Lookup("name"); nameFlag != nil {
 		name = nameFlag.Value.String()
 		if name == "" {
-			return fmt.Errorf("value can not empty")
+			return &EmptyValueError{Field: "field: name"}
 		}
 	}
 
-	// Vault password.
-	fmt.Printf("Enter vault password: ")
-	passVault, err := term.ReadPassword(int(os.Stdin.Fd()))
+	fmt.Printf("enter vault password: ")
+	secret, err := terminal.AskCredentials()
 	if err != nil {
-		return err
+		return fmt.Errorf("\nerror: %w", err)
 	}
 
-	password, err := pass.FindPassword(name, string(passVault))
-	if err != nil || password.Name == "" {
-		terminal.ClearLines(1)
-		return fmt.Errorf(`Password "%s" `+"not found", name)
+	if secret == "" {
+		return &EmptyValueError{Field: "vault password"}
 	}
 
-	terminal.ClearLines(1)
-	fmt.Printf(`"%s" is available`+"\n", password.Name)
+	password, err := pass.FindPassword(name, secret)
+	if err != nil {
+		return fmt.Errorf("\nerror: %w", err)
+	}
 
+	if password.Name == "" {
+		return fmt.Errorf("\nerror: password \"%s\" is not found", name)
+	}
+
+	fmt.Printf("\n\"%s\" is available\n", password.Name)
 	return nil
 }
