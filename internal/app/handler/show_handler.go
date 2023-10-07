@@ -48,6 +48,11 @@ func ShowPassword(fs *flag.FlagSet, args []string) error {
 		return fmt.Errorf("\nerror: %w", err)
 	}
 
+	if password.Name == "" {
+		fmt.Printf("\nvault: \"%s\" not available\n", name)
+		return nil
+	}
+
 	if copy {
 		err := clipboard.WriteAll(password.Pass)
 		if err != nil {
