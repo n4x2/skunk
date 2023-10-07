@@ -18,8 +18,8 @@ func ShowPassword(fs *flag.FlagSet, args []string) error {
 	}
 
 	var (
-		copy bool
-		name string
+		copy         bool
+		name, secret string
 	)
 
 	if nameFlag := fs.Lookup("name"); nameFlag != nil {
@@ -37,10 +37,18 @@ func ShowPassword(fs *flag.FlagSet, args []string) error {
 		copy = value
 	}
 
-	fmt.Print("enter vault password: ")
-	secret, err := terminal.AskCredentials()
-	if err != nil {
-		return fmt.Errorf("\nerror: %w", err)
+	passFlag := fs.Lookup("pass")
+	if passFlag != nil {
+		secret = passFlag.Value.String()
+	}
+
+	if secret == "" {
+		fmt.Print("enter vault password: ")
+		value, err := terminal.AskCredentials()
+		if err != nil {
+			return fmt.Errorf("\nerror: %w", err)
+		}
+		secret = value
 	}
 
 	password, err := pass.FindPassword(name, secret)

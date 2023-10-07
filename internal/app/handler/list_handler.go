@@ -13,19 +13,29 @@ func ListPassword(fs *flag.FlagSet, args []string) error {
 		return err
 	}
 
-	fmt.Printf("enter vault password: ")
-	secret, err := terminal.AskCredentials()
-	if err != nil {
-		return fmt.Errorf("\n%w", err)
+	var secret string
+	passFlag := fs.Lookup("pass")
+	if passFlag != nil {
+		secret = passFlag.Value.String()
 	}
 
 	if secret == "" {
-		return fmt.Errorf("\n%w", &EmptyValueError{Field: "vault password"})
+		fmt.Printf("enter vault password: ")
+		value, err := terminal.AskCredentials()
+		if err != nil {
+			return fmt.Errorf("\n%w", err)
+		}
+
+		if value == "" {
+			return fmt.Errorf("\n%w", &EmptyValueError{Field: "vault password"})
+		}
+		secret = value
+		fmt.Println()
 	}
 
 	passwords, err := pass.ListPassword(secret)
 	if err != nil {
-		return fmt.Errorf("\nerror: %w", err)
+		return fmt.Errorf("error: %w", err)
 	}
 
 	if passwords == nil {
@@ -33,7 +43,6 @@ func ListPassword(fs *flag.FlagSet, args []string) error {
 		return nil
 	}
 
-	fmt.Printf("\n\navailable %d passwords:\n", len(passwords))
 	for _, password := range passwords {
 		fmt.Printf("- %s\n", password.Name)
 	}

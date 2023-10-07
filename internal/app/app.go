@@ -70,6 +70,7 @@ func NewApp() *cli.App {
 	cmdBrief = "List available passwords"
 	cmdUsage = ""
 	list := app.NewCommand(cmdName, cmdBrief, cmdUsage, handler.ListPassword)
+	list.Fs.String("pass", "", "Password for vault instead of using prompt")
 
 	// Command generate.
 	cmdName = "generate"
@@ -105,6 +106,7 @@ func NewApp() *cli.App {
 	show := app.NewCommand(cmdName, cmdBrief, cmdUsage, handler.ShowPassword)
 	//Commmand show flags.
 	show.Fs.String("name", "", "Password name")
+	show.Fs.String("pass", "", "Password vault instead of using prompt")
 	show.Fs.Bool("copy", false, "Copy password into clipboard")
 	// Command show examples.
 	show.E = map[string]string{
